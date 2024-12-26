@@ -1,6 +1,5 @@
 package br.com.alura.screenmatch.model;
-
-import br.com.alura.screenmatch.service.ConsultaChatGPT;
+import br.com.alura.screenmatch.service.traducao.ConsultaMyMemory;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -10,39 +9,45 @@ import java.util.OptionalDouble;
 @Entity
 @Table(name = "series")
 public class Serie {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String titulo;
+
     private Integer totalTemporadas;
     private Double avaliacao;
+
     @Enumerated(EnumType.STRING)
-    private Categoria genero;
+    private Categoria genero; // Enum, onde genero sera uma Categoria
+
+    @Column(length = 500)
     private String atores;
     private String poster;
+
+    @Column(length = 1000)
     private String sinopse;
 
+    // Uma série para muitos episódios
+    // indica no parametro, qual atributo esta mapeado na outra classe, no outro como é a persistencia
     @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Episodio> episodios = new ArrayList<>();
+    // Esse mapeamento gera uma chave estrangeira na outra classe
+    private List<Episodio> episodios  = new ArrayList<>();
 
-    public Serie() {}
+    // Construtor padrão por exigência da JPA
+    public Serie() {};
 
-    public Serie(DadosSerie dadosSerie){
+    // Construtor da aplicação
+    public Serie(DadosSerie dadosSerie) {
         this.titulo = dadosSerie.titulo();
         this.totalTemporadas = dadosSerie.totalTemporadas();
-        this.avaliacao = OptionalDouble.of(Double.valueOf(dadosSerie.avaliacao())).orElse(0);
-        this.genero = Categoria.fromString(dadosSerie.genero().split(",")[0].trim());
+        this.avaliacao = OptionalDouble.of(Double.valueOf(dadosSerie.avaliacao())).orElse(0); // valor que chega em String
+        this.genero = Categoria.fromString(dadosSerie.genero().split(",")[0].trim()); // Usando um método estático que retorna dinamicamente o valor categorizado no Enum, sendo p primeiro genero somente
         this.atores = dadosSerie.atores();
         this.poster = dadosSerie.poster();
-        this.sinopse = ConsultaChatGPT.obterTraducao(dadosSerie.sinopse()).trim();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.sinopse = ConsultaMyMemory.obterTraducao(dadosSerie.sinopse()).trim();
     }
 
     public List<Episodio> getEpisodios() {
@@ -52,6 +57,14 @@ public class Serie {
     public void setEpisodios(List<Episodio> episodios) {
         episodios.forEach(e -> e.setSerie(this));
         this.episodios = episodios;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitulo() {
@@ -120,6 +133,6 @@ public class Serie {
                         ", atores='" + atores + '\'' +
                         ", poster='" + poster + '\'' +
                         ", sinopse='" + sinopse + '\'' +
-                        ", episodios='" + episodios + '\'';
+                        ", episódios='" + episodios + '\'';
     }
 }

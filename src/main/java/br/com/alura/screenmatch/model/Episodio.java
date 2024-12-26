@@ -1,19 +1,13 @@
 package br.com.alura.screenmatch.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 @Entity
 @Table(name = "episodios")
-public class Episodio {
 
+public class Episodio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,10 +16,15 @@ public class Episodio {
     private Integer numeroEpisodio;
     private Double avaliacao;
     private LocalDate dataLancamento;
+
+    // É necessário criar uma atributo da classe serie para que a relação se estabeleça
+    // Enquanto em Serie é OneToMany aqui será o oposto
+    // Muitos episódios para uma série
     @ManyToOne
     private Serie serie;
 
-    public Episodio(){}
+    // Construtor padrão por exigência da JPA
+    public Episodio() {};
 
     public Episodio(Integer numeroTemporada, DadosEpisodio dadosEpisodio) {
         this.temporada = numeroTemporada;

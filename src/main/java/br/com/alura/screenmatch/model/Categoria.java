@@ -1,6 +1,7 @@
 package br.com.alura.screenmatch.model;
 
 public enum Categoria {
+
     ACAO("Action", "Ação"),
     ROMANCE("Romance", "Romance"),
     COMEDIA("Comedy", "Comédia"),
@@ -8,9 +9,11 @@ public enum Categoria {
     CRIME("Crime", "Crime");
 
     private String categoriaOmdb;
+
+    // Atributo para o case 7 da aplicação
     private String categoriaPortugues;
 
-    Categoria(String categoriaOmdb, String categoriaPortugues){
+    Categoria(String categoriaOmdb, String categoriaPortugues) {
         this.categoriaOmdb = categoriaOmdb;
         this.categoriaPortugues = categoriaPortugues;
     }
