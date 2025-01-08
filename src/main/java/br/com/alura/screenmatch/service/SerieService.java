@@ -1,5 +1,6 @@
 package br.com.alura.screenmatch.service;
 
+import br.com.alura.screenmatch.dto.EpisodioDTO;
 import br.com.alura.screenmatch.dto.SerieDTO;
 import br.com.alura.screenmatch.model.Serie;
 import br.com.alura.screenmatch.repository.SerieRepository;
@@ -14,7 +15,6 @@ import java.util.stream.Collectors;
 // Classe que deverá se responsabilizar pela lógica de serviço da aplicação
 @Service
 public class SerieService {
-
 
     @Autowired
     private SerieRepository repositorio;
@@ -38,7 +38,7 @@ public class SerieService {
     }
 
     public List<SerieDTO> obterSeriesLancamento() {
-        return converteDados(repositorio.findTop5ByOrderByEpisodiosDataLancamentoDesc());
+        return converteDados(repositorio.lancamentosMaisRecentes());
     }
 
     // Por padrão o findById retorna um Optional, dessa forma é preciso tratar antes de serializar para um DTO
@@ -52,4 +52,20 @@ public class SerieService {
             return null;
         }
     }
+
+    // É preciso seguir a mesma lógica, buscar a sére e por meio dela, criar EpisodiosDTO, usando stream
+    public List<EpisodioDTO> obterTodasAsTemporadas(Long id) {
+        Optional<Serie> serie = repositorio.findById(id);
+        if (serie.isPresent()) {
+            Serie s = serie.get();
+            return s.getEpisodios().stream()
+                    .map(e -> new EpisodioDTO(e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()))
+                    .collect(Collectors.toList());
+        } else {
+            return null;
+        }
+    }
+
+
+
 }
