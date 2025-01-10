@@ -81,18 +81,15 @@ public class SerieService {
     }
 
     public List<EpisodioDTO> obterTopEpisodios(Long id) {
-        Optional<Serie> serie = repositorio.findById(id);
-        if (serie.isPresent()) {
-            Serie s = serie.get();
+            // O tratamento do null do Optional já ocorre no método da Principal
+            var serie = repositorio.findById(id).get();
 
-            return repositorio.topEpisodiosPorSerie(s)
+            // Lista de episódios
+            return repositorio.topEpisodiosPorSerie(serie)
                     .stream()
                     .map(e -> new EpisodioDTO(e.getTemporada(), e.getNumeroEpisodio(), e.getTitulo()))
                     .collect(Collectors.toList());
-        } else {
-            return null;
         }
-    }
 
 }
 
