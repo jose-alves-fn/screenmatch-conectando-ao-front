@@ -18,6 +18,7 @@ public enum Categoria {
         this.categoriaPortugues = categoriaPortugues;
     }
 
+    // Método usado para tratar dados vindos do OMDB
     public static Categoria fromString(String text) {
         for (Categoria categoria : Categoria.values()) {
             if (categoria.categoriaOmdb.equalsIgnoreCase(text)) {
@@ -27,6 +28,7 @@ public enum Categoria {
         throw new IllegalArgumentException("Nenhuma categoria encontrada para a string fornecida: " + text);
     }
 
+    // Método usado para tratar dados vindo do usuário ou de uma aplicação
     public static Categoria fromPortugues(String text) {
         for (Categoria categoria : Categoria.values()) {
             if (categoria.categoriaPortugues.equalsIgnoreCase(text)) {
